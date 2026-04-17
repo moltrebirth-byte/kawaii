@@ -1,17 +1,14 @@
-QGVjaG8gb2ZmCnNldGxvY2FsCgplY2hvIFsrXSBTdGFydGluZyBDb21waWxh
-dGlvbiBvZiB0aGUgRm94IEFyc2VuYWwuLi4KCmVjaG8gWytdIENvbXBpbGlu
-ZyBDVkUtMjAyNS0yMzE5OCAoTWljcm9zb2Z0IFRlYW1zIFplcm8tQ2xpY2sg
-UkNFKS4uLgpjbCAvTzIgL01UIC9HUi0gL0VoYy1zLSBvYmpzXGN2ZV8yMDI1
-XzIzMTk4X3RlYW1zX3JjZS5vYmogY3ZlXzIwMjVfMjMxOThfdGVhbXNfcmNl
-LmNwcCAvbGluayAvT1VUPWN2ZV8yMDI1XzIzMTk4X3RlYW1zX3JjZS5leGUK
-CmVjaG8gWytdIENvbXBpbGluZyB2MS4wIE5hdGl2ZSBEaXNjb3JkIEMyIEJl
-YWNvbi4uLgpjbCAvTzIgL01UIC9HUi0gL0VoYy1zLSBvYmpzXG1haW5fYmVh
-Y29uLm9iaiBkaXNjb3JkX2MyX25hdGl2ZVxtYWluX2JlYWNvbi5jcHAgd2lu
-aHR0cC5saWIgL2xpbmsgL09VVD1kaXNjb3JkX2MyX25hdGl2ZVxtYWluX2Jl
-YWNvbi5leGUKCmVjaG8gWytdIENvbXBpbGluZyB2Mi4wIEFkdmFuY2VkIERp
-c2NvcmQgQzIgQmVhY29uLi4uCmNsIC9PMiAvTVQgL0dSLSAvRWhjLXMtIG9i
-anNcbWFpbl9iZWFjb25fdjIub2JqIGRpc2NvcmRfYzJfdjJcbWFpbl9iZWFj
-b25fdjIuY3BwIHdpbmh0dHAubGliIC9saW5rIC9PVVQ9ZGlzY29yZF9jMl92
-MlxtYWluX2JlYWNvbl92Mi5leGUKCmVjaG8gWytdIENvbXBpbGF0aW9uIENv
-bXBsZXRlLgplY2hvIFshXSBQYXlsb2FkcyBhcmUgcmVhZHkgaW4gdGhlaXIg
-cmVzcGVjdGl2ZSBkaXJlY3Rvcmllcy4KZW5kbG9jYWw=
+@echo off
+setlocal
+echo [*] Starting Compilation of the Fox Arsenal...
+
+echo [*] Compiling CVE-2025-23198 (Microsoft Teams Zero-Click RCE)...
+cl.exe /nologo /Ox /MT /W0 /GS- /DNDEBUG /Tc cve_2025_23198_teams_rce.cpp /link /OUT:teams_rce.exe /SUBSYSTEM:CONSOLE /MACHINE:x64
+
+echo [*] Compiling Native Discord C2 Beacon (v2)...
+cl.exe /nologo /Ox /MT /W0 /GS- /DNDEBUG /Tc discord_c2_v2\main_beacon_v2.cpp /link /OUT:beacon_v2.exe /SUBSYSTEM:WINDOWS /MACHINE:x64
+
+echo [*] Compiling Custom Reflective Loader (sRDI)...
+cl.exe /nologo /Ox /MT /W0 /GS- /DNDEBUG /Tc discord_c2_v2\reflective_loader.cpp /link /OUT:loader.exe /SUBSYSTEM:WINDOWS /MACHINE:x64
+
+echo [*] Done.
