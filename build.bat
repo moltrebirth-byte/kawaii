@@ -6,7 +6,15 @@ cd /d "%~dp0"
 
 echo [*] Starting Compilation of the Fox Arsenal...
 
-:: Try to find vcvarsall.bat to initialize the MSVC environment
+:: Check if cl.exe is already in PATH (e.g., running from Native Tools Command Prompt)
+where cl >nul 2>nul
+if %ERRORLEVEL% equ 0 (
+    echo [*] MSVC compiler (cl.exe) found in PATH. Proceeding with compilation...
+    goto :compile
+)
+
+:: If cl.exe is not found, try to find vcvarsall.bat to initialize the MSVC environment
+echo [*] cl.exe not found in PATH. Attempting to locate vcvarsall.bat...
 set "VCVARS="
 
 :: Check common Visual Studio installation paths
@@ -17,6 +25,7 @@ set "VS_PATHS=!VS_PATHS! C:\Program Files\Microsoft Visual Studio\2022\Community
 set "VS_PATHS=!VS_PATHS! C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvarsall.bat"
 set "VS_PATHS=!VS_PATHS! C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\VC\Auxiliary\Build\vcvarsall.bat"
 set "VS_PATHS=!VS_PATHS! C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat"
+set "VS_PATHS=!VS_PATHS! C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Auxiliary\Build\vcvarsall.bat"
 
 for %%p in (!VS_PATHS!) do (
     if exist "%%p" (
@@ -41,6 +50,7 @@ if not defined VCVARS (
 echo [*] Initializing MSVC Environment...
 call "%VCVARS%" x64 >nul
 
+:compile
 :: Create a bin directory for the output
 if not exist "bin" mkdir bin
 
