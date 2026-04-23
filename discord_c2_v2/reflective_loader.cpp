@@ -2,8 +2,7 @@
 #include <winternl.h>
 
 // Custom Reflective Loader (sRDI)
-// This function acts as a custom OS loader, mapping the PE into memory,
-// resolving imports, processing relocations, and executing the entry point.
+// Acts as a custom OS loader, mapping the PE into memory, resolving imports, processing relocations, and executing the entry point.
 
 typedef HMODULE(WINAPI* LOADLIBRARYA)(LPCSTR);
 typedef FARPROC(WINAPI* GETPROCADDRESS)(HMODULE, LPCSTR);
@@ -32,13 +31,11 @@ FARPROC get_proc_address(HMODULE hModule, LPCSTR lpProcName) {
 HMODULE load_library_a(LPCSTR lpLibFileName) {
     // In a real sRDI, you'd walk the PEB to find kernel32.dll and its exports.
     // For this example, we assume kernel32 is already loaded and we can find it.
-    // This is a placeholder for the actual PEB walking logic.
     return LoadLibraryA(lpLibFileName);
 }
 
 void reflective_loader(LPVOID lpPayload) {
     // 1. Resolve Dependencies (Kernel32 base, LoadLibraryA, GetProcAddress)
-    // (Assuming we have them for this example)
     LOADLIBRARYA pLoadLibraryA = load_library_a;
     GETPROCADDRESS pGetProcAddress = get_proc_address;
 

